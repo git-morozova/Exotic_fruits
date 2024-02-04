@@ -23,21 +23,63 @@ let fruitsJSON = `[
 // преобразование JSON в объект JavaScript
 let fruits = JSON.parse(fruitsJSON);
 
+
+
 /*** ОТОБРАЖЕНИЕ ***/
 
 // отрисовка карточек
 const display = () => {
   // TODO: очищаем fruitsList от вложенных элементов,
   // чтобы заполнить актуальными данными из fruits
+  fruitsList.innerHTML = '';  
 
   for (let i = 0; i < fruits.length; i++) {
-    // TODO: формируем новый элемент <li> при помощи document.createElement,
+    // TODO: формируем новый элемент <li> при помощи document.createElement        
+    let cardLi = document.createElement('li');  
+    cardLi.className = "fruit__item"; 
+    let cardMainDiv = document.createElement('div');  
+    cardMainDiv.className = "fruit__info"; 
+    /////...а еще есть insertAdjacentHTML
+    cardMainDiv.insertAdjacentHTML('beforeend', `<div>index: ${i}</div>`);
+
+    /////добавляем стили для каждого цвета
+    switch (fruits[i].color) {
+      case 'фиолетовый': cardLi.className += ' fruit_violet';      break;
+      case 'зеленый': cardLi.className += ' fruit_green';      break;
+      case 'розово-красный': cardLi.className += ' fruit_carmazin';      break;
+      case 'желтый': cardLi.className += ' fruit_yellow';      break;
+      case 'светло-коричневый': cardLi.className += ' fruit_lightbrown';      break;
+      default: cardLi.style.cssText = 'background-color:#c6c6c6';      break; /////если цвет не задан
+    }      
+
     // и добавляем в конец списка fruitsList при помощи document.appendChild
+    /////appendChild разве не устарела?   
+    cardLi.append(cardMainDiv);
+    fruitsList.append(cardLi);     
+    
+
+    /////строки для наполнения карточки - извлекаем из БД и рендерим
+    let cardKind = document.createElement('div'); 
+    let cardKindText = document.createTextNode("kind: " + fruits[i].kind);
+    cardKind.append(cardKindText);
+    cardMainDiv.append(cardKind);
+
+    let cardColor = document.createElement('div'); 
+    let cardColorText = document.createTextNode("color: " + fruits[i].color);
+    cardColor.append(cardColorText);
+    cardMainDiv.append(cardColor);
+    
+    let cardWeight = document.createElement('div'); 
+    let cardWeightText = document.createTextNode("weight (кг): " + fruits[i].weight);
+    cardWeight.append(cardWeightText);
+    cardMainDiv.append(cardWeight);
   }
 };
 
 // первая отрисовка карточек
 display();
+
+
 
 /*** ПЕРЕМЕШИВАНИЕ ***/
 
@@ -48,7 +90,10 @@ const getRandomInt = (min, max) => {
 
 // перемешивание массива
 const shuffleFruits = () => {
-  let result = [];
+  let result = [];  
+
+  /////делаем глубокое копирование fruits для последующей проверки на совпадение с перемешанным массивом
+  const fruitsDeepCopy = JSON.parse(JSON.stringify(fruits));
 
   // ATTENTION: сейчас при клике вы запустите бесконечный цикл и браузер зависнет
   while (fruits.length > 0) {
@@ -57,16 +102,21 @@ const shuffleFruits = () => {
     // Подсказка: находим случайный элемент из fruits, используя getRandomInt
     // вырезаем его из fruits и вставляем в result.
     // ex.: [1, 2, 3], [] => [1, 3], [2] => [3], [2, 1] => [], [2, 1, 3]
-    // (массив fruits будет уменьшатся, а result заполняться)
+    // (массив fruits будет уменьшатся, а result заполняться)   
+    let randomEl = fruits.splice(getRandomInt(0,fruits.length-1),1);
+    result.push(...randomEl);    
   }
 
-  fruits = result;
+/////особый случай, когда при перемешивании получившийся массив совпадает со старым
+fruits == fruitsDeepCopy ? alert('Порядок не изменился') : fruits = result;
 };
 
 shuffleButton.addEventListener('click', () => {
   shuffleFruits();
   display();
 });
+
+
 
 /*** ФИЛЬТРАЦИЯ ***/
 
