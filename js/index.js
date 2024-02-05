@@ -98,8 +98,8 @@ const getRandomInt = (min, max) => {
 const shuffleFruits = () => {
   let result = [];  
 
-  /////делаем глубокое копирование fruits для последующей проверки на совпадение с перемешанным массивом
-  const fruitsDeepCopy = JSON.parse(JSON.stringify(fruits));
+  /////делаем глубокое копирование fruits для последующей проверки на совпадение с перемешанным массивом  
+  const fruitsDeepCopy = JSON.stringify(fruits);  
 
   // ATTENTION: сейчас при клике вы запустите бесконечный цикл и браузер зависнет
   while (fruits.length > 0) {
@@ -112,9 +112,12 @@ const shuffleFruits = () => {
     let randomEl = fruits.splice(getRandomInt(0,fruits.length-1),1);
     result.push(...randomEl);    
   }
-
+  
 /////особый случай, когда при перемешивании получившийся массив совпадает со старым
-fruits == fruitsDeepCopy ? alert('Порядок не изменился') : fruits = result;
+JSON.stringify(result) == fruitsDeepCopy ? alert('Порядок не изменился') : "";
+
+/////записываем результат в массив fruits
+fruits = result;
 };
 
 shuffleButton.addEventListener('click', () => {
