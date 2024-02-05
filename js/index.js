@@ -11,6 +11,11 @@ const colorInput = document.querySelector('.color__input'); // поле с на�
 const weightInput = document.querySelector('.weight__input'); // поле с весом
 const addActionButton = document.querySelector('.add__action__btn'); // кнопка добавления
 
+const delActionButton = document.querySelector('.del__action__btn'); ///// кнопка удаления
+const borderInput = document.querySelector('#border_color'); ///// поле с цветом границы блока
+const minWeightInput = document.querySelector('.minweight__input'); // поле с нижней границей weight
+const maxWeightInput = document.querySelector('.maxweight__input'); // поле с верхней границей weight
+
 // список фруктов в JSON формате
 let fruitsJSON = `[
   {"kind": "Мангустин", "color": "фиолетовый", "weight": 13},
@@ -49,7 +54,8 @@ const display = () => {
       case 'розово-красный': cardLi.className += ' fruit_carmazin';      break;
       case 'желтый': cardLi.className += ' fruit_yellow';      break;
       case 'светло-коричневый': cardLi.className += ' fruit_lightbrown';      break;
-      default: cardLi.style.cssText = 'background-color:#c6c6c6';      break; /////если цвет не задан
+      default: cardLi.style.cssText = `background-color: ${fruits[i].border}`;      break; 
+      ///// если цвет не входит в список значений из исходного fruits - значение rgb будет заменено на цвет из инпута color picker
     }      
 
     // и добавляем в конец списка fruitsList при помощи document.appendChild
@@ -73,7 +79,7 @@ const display = () => {
     let cardWeightText = document.createTextNode("weight (кг): " + fruits[i].weight);
     cardWeight.append(cardWeightText);
     cardMainDiv.append(cardWeight);
-  }
+  }  
 };
 
 // первая отрисовка карточек
@@ -122,15 +128,23 @@ shuffleButton.addEventListener('click', () => {
 
 // фильтрация массива
 const filterFruits = () => {
-  fruits.filter((item) => {
-    // TODO: допишите функцию
-  });
+  if (minWeightInput.value && maxWeightInput.value) {
+      const newFilteredArray = fruits.filter((item) =>    
+        // TODO: допишите функцию   
+        minWeightInput.value <= item.weight && item.weight <= maxWeightInput.value            
+      ) 
+      fruits = newFilteredArray;
+  } else {
+    alert("Пожалуйста, заполните оба поля - min weight и max weight");
+  }
 };
 
 filterButton.addEventListener('click', () => {
   filterFruits();
   display();
 });
+
+
 
 /*** СОРТИРОВКА ***/
 
@@ -175,10 +189,48 @@ sortActionButton.addEventListener('click', () => {
   // TODO: вывести в sortTimeLabel значение sortTime
 });
 
+
+
 /*** ДОБАВИТЬ ФРУКТ ***/
 
 addActionButton.addEventListener('click', () => {
   // TODO: создание и добавление нового фрукта в массив fruits
   // необходимые значения берем из kindInput, colorInput, weightInput
+
+  ///// забираем значение из инпута color picker для border
+  let borderColor = borderInput.getAttribute('data-current-color');
+
+  ///// проверяем, что введенное в поле "color:" значение - новое в fruits. Если нет - выводим предупреждение и заменяем цвет на существующий в базе
+  for (let i = 0; i < fruits.length; i++) {
+    if (colorInput.value == fruits[i].color) {     
+      fruits[i].border ? borderColor = fruits[i].border : "";
+      alert('Вы ввели в поле "color:" один из уже существующих цветов. Цвет границы блока (border color) был заменен на значение rgb, закрепленное за существуюшим цветом');
+      break;
+    }
+  }  
+
+  ///// создаем новый объект и засовываем в БД
+  if (kindInput.value && colorInput.value && weightInput.value) {    
+    const newFruit = new Object ({ kind: kindInput.value, color: colorInput.value, weight: weightInput.value });
+
+    /////тут надо проверить, что цвет, введенный в поле "color:", не совпадает с любым из пяти первоначальных цветов fruits, т.к. для них не было значения "border:"
+    if (colorInput.value !== "фиолетовый" && colorInput.value !== "зеленый" && colorInput.value !== "розово-красный" 
+    && colorInput.value !== "желтый" && colorInput.value !== "светло-коричневый") {
+      newFruit.border = borderColor;      
+    }   
+
+    fruits.push(newFruit);
+    display();  
+  } else {
+    alert('Пожалуйста, заполните все поля');  /////если хотя бы одно из полей не заполнено
+  }
+});
+
+
+
+/*** УДАЛИТЬ ПОСЛЕДНИЙ ФРУКТ ***/
+
+delActionButton.addEventListener('click', () => {  
+  fruits.length > 0 ? fruits.pop () : alert('Больше нечего удалять');
   display();
 });

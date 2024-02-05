@@ -66,19 +66,18 @@
             <input class="weight__input" />
           </div>
 
-<!-- плагин color picker взят с https://jscolor.com/ -->
+<!-- ///// плагин color picker взят с https://jscolor.com/ -->
           <div class="line">
             <div>border color:</div>
             <script src="./js/jscolor.js"></script>
-            <input value="rgb(255,117,0)" data-jscolor="{
-             format: 'rgb',
-             previewPosition: 'right'
-          }" data-current-color="rgb(255,117,0)">
+            <input id ="border_color" value="rgb(255,147,56)" data-jscolor="{format:'rgb', previewPosition:'right'}" data-current-color="rgb(255,147,56)">
           </div>
-<!-- // -->
+<!-- ///// -->
 
           <!-- TODO: при нажатии новый фрукт добавляется в конец списка -->
           <button class="add__action__btn line">Добавить фрукт</button>
+
+          <button class="del__action__btn line">Удалить последний в списке</button>
         </div>
       </section>
 
