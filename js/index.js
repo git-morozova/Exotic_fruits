@@ -55,7 +55,7 @@ const display = () => {
       case 'желтый': cardLi.className += ' fruit_yellow';      break;
       case 'светло-коричневый': cardLi.className += ' fruit_lightbrown';      break;
       default: cardLi.style.cssText = `background-color: ${fruits[i].border}`;      break; 
-      ///// если цвет не входит в список значений из исходного fruits - значение rgb будет заменено на цвет из инпута color picker
+      ///// если цвет не входит в список значений из исходного fruits - значение для border color будет подтянуто НЕ из css файла, а из значения объекта с ключом border
     }      
 
     // и добавляем в конец списка fruitsList при помощи document.appendChild
@@ -156,15 +156,32 @@ let sortTime = '-'; // инициализация состояния време�
 
 const comparationColor = (a, b) => {
   // TODO: допишите функцию сравнения двух элементов по цвету
+  ///// по длине значения color
+  return a.color.length > b.color.length;
 };
-
+    
 const sortAPI = {
   bubbleSort(arr, comparation) {
     // TODO: допишите функцию сортировки пузырьком
+    ///// скопировано из модуля, проработано
+      for (let i = 1; i < arr.length; i++) {
+        const current = arr[i];
+        let j = i;
+       
+        while (j > 0 && comparation(arr[j - 1], current)) {
+            arr[j] = arr[j - 1];
+            j--;
+        }
+        arr[j] = current;
+    }
   },
 
   quickSort(arr, comparation) {
     // TODO: допишите функцию быстрой сортировки
+    //comparation(arr[i - 1], arr[i])
+  
+    
+
   },
 
   // выполняет сортировку и производит замер времени
@@ -182,14 +199,24 @@ sortTimeLabel.textContent = sortTime;
 
 sortChangeButton.addEventListener('click', () => {
   // TODO: переключать значение sortKind между 'bubbleSort' / 'quickSort'
+  if (sortKind == 'bubbleSort') {
+    sortKind = 'quickSort';
+    sortKindLabel.textContent = 'quickSort';
+  } else {
+    sortKind = 'bubbleSort';
+    sortKindLabel.textContent = 'bubbleSort';
+  }
 });
 
 sortActionButton.addEventListener('click', () => {
   // TODO: вывести в sortTimeLabel значение 'sorting...'
+  sortTimeLabel.textContent = 'sorting...';
+  /*debugger*/
   const sort = sortAPI[sortKind];
   sortAPI.startSort(sort, fruits, comparationColor);
   display();
   // TODO: вывести в sortTimeLabel значение sortTime
+  sortTimeLabel.textContent = sortTime;
 });
 
 
