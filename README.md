@@ -8,4 +8,4 @@
 - фильтр по весу
 - перемешивание списка
 
-Доступен в [Pages](https://git-morozova.github.io/module11/)
+Доступен в [Pages](https://git-morozova.github.io/Exotic_fruits/)
